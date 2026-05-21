@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0c150d">
+  <title>하이네켄 × 2026 FIFA 월드컵 승부예측</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0c150d; --bg-card: rgba(255,255,255,0.05); --bg-card2: rgba(255,255,255,0.08);
+      --green: #00A651; --green-dark: #007A33; --green-deep: #005826;
+      --gold: #F4C300; --red-kr: #C60C30; --red-cz: #D7141A;
+      --text: #fff; --muted: rgba(255,255,255,0.5); --dim: rgba(255,255,255,0.28);
+      --border: rgba(255,255,255,0.1); --border-g: rgba(0,166,81,0.3);
+      --radius: 16px; --fb: 'Noto Sans KR',sans-serif; --fd: 'Bebas Neue',sans-serif;
+    }
+    html { -webkit-tap-highlight-color: transparent; }
+    body { font-family: var(--fb); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    button { font-family: var(--fb); cursor: pointer; border: none; outline: none; }
+    input, select { font-family: var(--fb); outline: none; }
+    [v-cloak] { display: none; }
+
+    /* ── Header ── */
+    .hdr { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 13px 20px; background: rgba(12,21,13,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .hdr-logo { display: flex; align-items: center; gap: 8px; }
+    .hdr-star { width: 20px; height: 20px; flex-shrink: 0; }
+    .hdr-txt { font-size: 15px; font-weight: 900; letter-spacing: 0.4px; line-height: 1; }
+    .hdr-hk { color: var(--green); } .hdr-kr { color: #fff; }
+    .hdr-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; color: var(--gold); border: 1px solid rgba(244,195,0,0.4); border-radius: 99px; padding: 5px 10px; white-space: nowrap; }
+
+    /* ── Hero ── */
+    .hero { padding: 28px 20px 8px; max-width: 480px; margin: 0 auto; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+    .eyebrow-line { flex: 1; height: 1px; background: var(--border); display: block; }
+    .display { font-family: var(--fd); line-height: 0.88; margin-bottom: 14px; }
+    .display-w { font-size: clamp(68px, 21vw, 92px); color: #fff; display: block; }
+    .display-g { font-size: clamp(68px, 21vw, 92px); color: var(--green); display: block; }
+    .hero-sub { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 18px; }
+    .prize { display: inline-flex; align-items: center; gap: 8px; background: rgba(244,195,0,0.08); border: 1px solid rgba(244,195,0,0.35); border-radius: 99px; padding: 9px 18px; font-size: 13px; color: var(--gold); margin-bottom: 22px; }
+    .prize strong { font-weight: 800; }
+
+    /* ── Match card ── */
+    .mc { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 6px; }
+    .mc-bar { display: flex; height: 4px; }
+    .mc-bar-kr { flex: 1; background: linear-gradient(to right, #003478, #C60C30); }
+    .mc-bar-cz { flex: 1; background: linear-gradient(to right, #D7141A, rgba(255,255,255,0.2)); }
+    .mc-teams { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 12px; gap: 10px; }
+    .mc-team { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .mc-team.right { align-items: flex-end; }
+    .mc-code { font-family: var(--fd); font-size: 38px; color: #fff; line-height: 1; letter-spacing: 1px; }
+    .mc-emoji { font-size: 20px; line-height: 1; }
+    .mc-name { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .mc-vs { font-family: var(--fd); font-size: 20px; color: var(--dim); flex-shrink: 0; }
+    .mc-info { padding: 9px 22px 14px; font-size: 11px; color: var(--dim); border-top: 1px solid var(--border); letter-spacing: 0.2px; }
+
+    /* ── Mini match bar ── */
+    .mini-bar { max-width: 480px; margin: 0 auto; padding: 12px 20px; font-size: 13px; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+    .mini-vs { font-size: 11px; color: var(--dim); }
+    .mini-date { font-size: 11px; color: var(--dim); }
+
+    /* ── Step bar ── */
+    .step-bar { display: flex; align-items: center; justify-content: center; padding: 16px 20px 2px; max-width: 480px; margin: 0 auto; }
+    .step-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .step-circ { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; transition: all 0.3s; }
+    .step-circ.active { border-color: var(--green); background: var(--green); color: #fff; box-shadow: 0 0 12px rgba(0,166,81,0.45); }
+    .step-circ.done { border-color: var(--green); background: var(--green-deep); }
+    .step-circ svg { width: 12px; height: 12px; }
+    .step-lbl { font-size: 11px; font-weight: 600; color: var(--dim); white-space: nowrap; transition: color 0.3s; }
+    .step-lbl.active { color: var(--text); }
+    .step-ln { width: 28px; height: 1px; background: var(--border); margin: 0 4px; flex-shrink: 0; transition: background 0.3s; }
+    .step-ln.done { background: var(--green-deep); }
+
+    /* ── Shared form ── */
+    .step-wrap { max-width: 480px; margin: 0 auto; padding: 14px 20px 48px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 20px; margin-bottom: 14px; }
+    .sec-lbl { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 18px; }
+    .sec-num { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--green); color: #fff; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+    .field { margin-bottom: 14px; } .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 7px; letter-spacing: 0.2px; }
+    .req { color: var(--green); }
+    .field input, .field select { width: 100%; background: var(--bg-card2); border: 1.5px solid var(--border); border-radius: 12px; color: #fff; font-size: 16px; padding: 13px 16px; transition: border-color 0.2s, background 0.2s; -webkit-appearance: none; }
+    .field input:focus, .field select:focus { border-color: var(--green); background: rgba(0,166,81,0.08); }
+    .field input::placeholder { color: var(--dim); }
+    .field select option { background: #111f13; color: #fff; }
+    .sel-wrap { position: relative; }
+    .sel-chev { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); pointer-events: none; }
+    .sel-wrap select { padding-right: 40px; }
+    .err-msg { font-size: 13px; color: #ff6b6b; text-align: center; margin-bottom: 10px; }
+    .nav { display: flex; gap: 10px; }
+    .btn-back { background: transparent; border: 1.5px solid var(--border); border-radius: 14px; color: var(--muted); font-size: 15px; font-weight: 700; padding: 15px 20px; transition: all 0.2s; flex-shrink: 0; }
+    .btn-back:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+    .btn-next, .btn-submit { flex: 1; padding: 16px; background: linear-gradient(135deg, var(--green-deep), var(--green-dark), var(--green)); border-radius: 14px; color: #fff; font-size: 16px; font-weight: 800; letter-spacing: 1px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 18px rgba(0,122,51,0.4); width: 100%; }
+    .btn-next:hover:not(:disabled), .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(0,122,51,0.55); }
+    .btn-next:active, .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── Step 2 score ── */
+    .score-area { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 20px; }
+    .score-col { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+    .score-flag { font-size: 30px; line-height: 1; }
+    .score-lbl { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .stepper { display: flex; align-items: center; background: var(--bg-card2); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; width: 100%; max-width: 140px; transition: border-color 0.2s; }
+    .stepper:focus-within { border-color: var(--green); }
+    .step-btn { background: transparent; color: var(--muted); font-size: 24px; font-weight: 300; width: 42px; height: 64px; flex-shrink: 0; transition: color 0.15s, background 0.15s; line-height: 1; }
+    .step-btn:hover:not(:disabled) { color: #fff; background: rgba(255,255,255,0.06); }
+    .step-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+    .score-val { flex: 1; text-align: center; font-family: var(--fd); font-size: 46px; color: #fff; line-height: 1; user-select: none; }
+    .score-colon { font-family: var(--fd); font-size: 34px; color: rgba(255,255,255,0.22); flex-shrink: 0; padding-top: 44px; }
+    .result-chip { text-align: center; font-size: 14px; font-weight: 700; padding: 10px 20px; border-radius: 99px; transition: all 0.3s; }
+    .rc-kr   { background: rgba(0,52,120,0.25); border: 1px solid rgba(0,52,120,0.5); color: #7fb3ff; }
+    .rc-cz   { background: rgba(215,20,26,0.15); border: 1px solid rgba(215,20,26,0.4); color: #ff8888; }
+    .rc-draw { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--muted); }
+
+    /* ── Step 3 scorer ── */
+    .scorer-hint { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+    .no-goal-notice { background: rgba(244,195,0,0.08); border: 1px solid rgba(244,195,0,0.25); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--gold); margin-bottom: 14px; }
+    .team-div { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.4px; margin: 16px 0 10px; }
+    .team-div.cz { margin-top: 18px; }
+    .player-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .pchip { display: flex; align-items: center; gap: 10px; background: var(--bg-card2); border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 13px; text-align: left; transition: all 0.2s; cursor: pointer; width: 100%; }
+    .pchip.full { grid-column: 1/-1; margin-top: 10px; }
+    .pchip:hover:not(.sel) { border-color: rgba(0,166,81,0.4); background: rgba(0,166,81,0.06); }
+    .pchip.sel { border-color: var(--green); background: rgba(0,166,81,0.18); box-shadow: 0 0 0 2px rgba(0,166,81,0.15); }
+    .p-no { font-family: var(--fd); font-size: 18px; color: var(--dim); min-width: 22px; line-height: 1; }
+    .p-no.cz { color: rgba(215,20,26,0.55); }
+    .pchip.sel .p-no { color: var(--green); }
+    .p-name { font-size: 13px; font-weight: 700; color: var(--muted); line-height: 1.2; }
+    .pchip.sel .p-name { color: #fff; }
+
+    /* ── Success ── */
+    .success { max-width: 480px; margin: 0 auto; padding: 48px 20px 60px; text-align: center; }
+    .s-trophy { font-size: 78px; margin-bottom: 18px; display: block; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes pop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .s-title { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+    .s-sub { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+    .s-card { background: var(--bg-card); border: 1px solid var(--border-g); border-radius: var(--radius); padding: 20px; text-align: left; margin-bottom: 18px; }
+    .s-card-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+    .s-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+    .s-row:last-child { border-bottom: none; }
+    .s-key { color: var(--muted); } .s-val { font-weight: 700; color: #fff; }
+    .val-kr { color: #7fb3ff; } .val-cz { color: #ff8888; }
+    .s-prize { display: inline-flex; align-items: center; gap: 8px; background: rgba(244,195,0,0.08); border: 1px solid rgba(244,195,0,0.3); border-radius: 12px; padding: 14px 20px; font-size: 13px; color: var(--gold); line-height: 1.5; }
+    .s-prize strong { font-weight: 800; }
+
+    /* ── State page ── */
+    .state-pg { max-width: 480px; margin: 0 auto; padding: 80px 20px 40px; text-align: center; }
+    .state-icon { display: block; font-size: 70px; margin-bottom: 22px; }
+    .state-pg h2 { font-size: 26px; font-weight: 900; margin-bottom: 10px; }
+    .state-pg p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* ── Transitions ── */
+    .sl-enter-active, .sl-leave-active, .sr-enter-active, .sr-leave-active { transition: all 0.28s cubic-bezier(0.4,0,0.2,1); }
+    .sl-enter-from { opacity: 0; transform: translateX(36px); }
+    .sl-leave-to   { opacity: 0; transform: translateX(-36px); }
+    .sr-enter-from { opacity: 0; transform: translateX(-36px); }
+    .sr-leave-to   { opacity: 0; transform: translateX(36px); }
+  </style>
+</head>
+<body>
+  <div id="app" v-cloak></div>
+
+  <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
+  <script>
+  const { createApp, ref, reactive, computed } = Vue;
+
+  // ── Config ────────────────────────────────────────────────────
+  // ⚠️ 배포 전 Apps Script URL 로 교체하세요
+  const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+  const DEADLINE    = new Date('2026-06-12T01:30:00Z'); // KST 10:30
+  const STORAGE_KEY = 'hk_wc2026_korea_czech';
+
+  // ── Player data ───────────────────────────────────────────────
+  const KR_PLAYERS = [
+    { id:'son',     name:'손흥민',  no:7  },
+    { id:'lee-ki',  name:'이강인',  no:10 },
+    { id:'hwang',   name:'황희찬',  no:11 },
+    { id:'cho',     name:'조규성',  no:9  },
+    { id:'hwang-i', name:'황인범',  no:8  },
+    { id:'lee-js',  name:'이재성',  no:17 },
+    { id:'oh',      name:'오현규',  no:18 },
+    { id:'seol',    name:'설영우',  no:2  },
+  ];
+  const CZ_PLAYERS = [
+    { id:'schick', name:'P. Schick', no:10 },
+    { id:'hlozek', name:'A. Hložek', no:11 },
+    { id:'soucek', name:'T. Souček', no:8  },
+    { id:'lingr',  name:'O. Lingr',  no:9  },
+    { id:'provod', name:'L. Provod', no:14 },
+    { id:'coufal', name:'V. Coufal', no:5  },
+  ];
+  const ALL_PLAYERS = [...KR_PLAYERS, ...CZ_PLAYERS, { id:'none', name:'득점 없음', no:null }];
+
+  // ── Components ────────────────────────────────────────────────
+
+  const TheHeader = {
+    template: `
+      <header class="hdr">
+        <div class="hdr-logo">
+          <svg class="hdr-star" viewBox="0 0 24 24">
+            <polygon points="12,1 15.09,8.26 23,9.27 17.5,14.63 18.18,22.54 12,19.27 5.82,22.54 6.5,14.63 1,9.27 8.91,8.26" fill="#C8102E"/>
+          </svg>
+          <span class="hdr-txt"><span class="hdr-hk">HEINEKEN</span><span class="hdr-kr"> KOREA</span></span>
+        </div>
+        <div class="hdr-badge">⚽ 2026 FIFA WORLD CUP</div>
+      </header>
+    `
+  };
+
+  const MatchHero = {
+    template: `
+      <section class="hero">
+        <p class="eyebrow"><span class="eyebrow-line"/>&nbsp;승부예측 챌린지&nbsp;<span class="eyebrow-line"/></p>
+        <h1 class="display">
+          <span class="display-w">SCORE</span>
+          <span class="display-g">PREDICT</span>
+        </h1>
+        <p class="hero-sub">최종 스코어와 마지막 득점자를 맞혀보세요.<br>정확히 맞추면 당신이 오늘의 주인공!</p>
+        <div class="prize"><span>🏆</span><span>완벽 정답자 배민 상품권 <strong>10만원</strong></span></div>
+        <div class="mc">
+          <div class="mc-bar"><div class="mc-bar-kr"/><div class="mc-bar-cz"/></div>
+          <div class="mc-teams">
+            <div class="mc-team">
+              <span class="mc-code">KR</span>
+              <span class="mc-emoji">🇰🇷</span>
+              <span class="mc-name">대한민국</span>
+            </div>
+            <span class="mc-vs">VS</span>
+            <div class="mc-team right">
+              <span class="mc-code">CZ</span>
+              <span class="mc-emoji">🇨🇿</span>
+              <span class="mc-name">체코</span>
+            </div>
+          </div>
+          <p class="mc-info">📅 2026년 6월 12일 (금) · 오전 11:00 · FIFA WORLD CUP A조</p>
+        </div>
+      </section>
+    `
+  };
+
+  const StepBar = {
+    props: ['current'],
+    setup() {
+      return { steps: ['정보 입력', '스코어', '득점자'] };
+    },
+    template: `
+      <div class="step-bar">
+        <template v-for="(label, i) in steps" :key="i">
+          <div class="step-item">
+            <div class="step-circ" :class="{ active: current === i+1, done: current > i+1 }">
+              <svg v-if="current > i+1" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span v-else>{{ i+1 }}</span>
+            </div>
+            <span class="step-lbl" :class="{ active: current === i+1 }">{{ label }}</span>
+          </div>
+          <div v-if="i < steps.length - 1" class="step-ln" :class="{ done: current > i+1 }"/>
+        </template>
+      </div>
+    `
+  };
+
+  const FormStep1 = {
+    emits: ['next'],
+    setup(_, { emit }) {
+      const name = ref('');
+      const dept = ref('');
+      const err  = ref('');
+      const depts = ['영업팀','마케팅팀','On Trade팀','Off Trade팀','재무팀','HR팀','물류/SCM팀','기타'];
+      function next() {
+        err.value = '';
+        if (!name.value.trim()) { err.value = '이름을 입력해주세요.'; return; }
+        if (!dept.value)        { err.value = '부서를 선택해주세요.'; return; }
+        emit('next', { name: name.value.trim(), department: dept.value });
+      }
+      return { name, dept, err, depts, next };
+    },
+    template: `
+      <div class="step-wrap">
+        <div class="card">
+          <p class="sec-lbl"><span class="sec-num">1</span> 내 정보</p>
+          <div class="field">
+            <label>이름 <span class="req">*</span></label>
+            <input v-model="name" type="text" placeholder="홍길동" maxlength="20" autocomplete="off" @keyup.enter="next">
+          </div>
+          <div class="field">
+            <label>부서 <span class="req">*</span></label>
+            <div class="sel-wrap">
+              <select v-model="dept">
+                <option value="">부서를 선택해주세요</option>
+                <option v-for="d in depts" :key="d" :value="d">{{ d }}</option>
+              </select>
+              <svg class="sel-chev" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+        <p v-if="err" class="err-msg">{{ err }}</p>
+        <button class="btn-next" @click="next">다음 →</button>
+      </div>
+    `
+  };
+
+  const FormStep2 = {
+    emits: ['next', 'back'],
+    setup(_, { emit }) {
+      const kr = ref(0);
+      const cz = ref(0);
+      function change(team, d) {
+        if (team === 'kr') kr.value = Math.max(0, Math.min(20, kr.value + d));
+        else               cz.value = Math.max(0, Math.min(20, cz.value + d));
+      }
+      const resultLabel = computed(() => {
+        if (kr.value > cz.value) return '🇰🇷 대한민국 승';
+        if (kr.value < cz.value) return '🇨🇿 체코 승';
+        return '🤝 무승부';
+      });
+      const resultClass = computed(() => {
+        if (kr.value > cz.value) return 'result-chip rc-kr';
+        if (kr.value < cz.value) return 'result-chip rc-cz';
+        return 'result-chip rc-draw';
+      });
+      function next() { emit('next', { scoreKorea: kr.value, scoreCzech: cz.value }); }
+      return { kr, cz, change, resultLabel, resultClass, next };
+    },
+    template: `
+      <div class="step-wrap">
+        <div class="card">
+          <p class="sec-lbl"><span class="sec-num">2</span> 최종 스코어 예측</p>
+          <div class="score-area">
+            <div class="score-col">
+              <span class="score-flag">🇰🇷</span>
+              <span class="score-lbl">대한민국</span>
+              <div class="stepper">
+                <button class="step-btn" @click="change('kr',-1)" :disabled="kr===0">−</button>
+                <span class="score-val">{{ kr }}</span>
+                <button class="step-btn" @click="change('kr',+1)" :disabled="kr===20">+</button>
+              </div>
+            </div>
+            <span class="score-colon">:</span>
+            <div class="score-col">
+              <span class="score-flag">🇨🇿</span>
+              <span class="score-lbl">체코</span>
+              <div class="stepper">
+                <button class="step-btn" @click="change('cz',-1)" :disabled="cz===0">−</button>
+                <span class="score-val">{{ cz }}</span>
+                <button class="step-btn" @click="change('cz',+1)" :disabled="cz===20">+</button>
+              </div>
+            </div>
+          </div>
+          <div :class="resultClass">{{ resultLabel }}</div>
+        </div>
+        <div class="nav">
+          <button class="btn-back" @click="$emit('back')">← 이전</button>
+          <button class="btn-next" @click="next">다음 →</button>
+        </div>
+      </div>
+    `
+  };
+
+  const FormStep3 = {
+    props: { scoreKorea: Number, scoreCzech: Number, submitting: Boolean },
+    emits: ['submit', 'back'],
+    setup(props, { emit }) {
+      const isNoScore = computed(() => props.scoreKorea === 0 && props.scoreCzech === 0);
+      const sel = ref(isNoScore.value ? 'none' : '');
+      const err = ref('');
+      function submit() {
+        err.value = '';
+        const id = isNoScore.value ? 'none' : sel.value;
+        if (!id) { err.value = '마지막 득점자를 선택해주세요.'; return; }
+        const p = ALL_PLAYERS.find(x => x.id === id);
+        emit('submit', { lastScorer: p ? p.name : '득점 없음' });
+      }
+      return { isNoScore, sel, err, KR_PLAYERS, CZ_PLAYERS, submit };
+    },
+    template: `
+      <div class="step-wrap">
+        <div class="card">
+          <p class="sec-lbl"><span class="sec-num">3</span> 마지막 득점자 예측</p>
+          <p class="scorer-hint">경기에서 마지막으로 골을 넣은 선수를 선택하세요.</p>
+          <div v-if="isNoScore" class="no-goal-notice">0 : 0 예측 시 득점 없음이 자동 선택됩니다.</div>
+          <template v-if="!isNoScore">
+            <p class="team-div">🇰🇷 대한민국</p>
+            <div class="player-grid">
+              <button v-for="p in KR_PLAYERS" :key="p.id" class="pchip" :class="{ sel: sel===p.id }" @click="sel=p.id">
+                <span class="p-no">{{ p.no }}</span>
+                <span class="p-name">{{ p.name }}</span>
+              </button>
+            </div>
+            <p class="team-div cz">🇨🇿 체코</p>
+            <div class="player-grid">
+              <button v-for="p in CZ_PLAYERS" :key="p.id" class="pchip" :class="{ sel: sel===p.id }" @click="sel=p.id">
+                <span class="p-no cz">{{ p.no }}</span>
+                <span class="p-name">{{ p.name }}</span>
+              </button>
+            </div>
+            <button class="pchip full" :class="{ sel: sel==='none' }" @click="sel='none'">
+              <span class="p-no">—</span>
+              <span class="p-name">득점 없음 (무득점)</span>
+            </button>
+          </template>
+          <template v-else>
+            <button class="pchip full sel">
+              <span class="p-no">—</span>
+              <span class="p-name">득점 없음 (무득점)</span>
+            </button>
+          </template>
+        </div>
+        <p v-if="err" class="err-msg">{{ err }}</p>
+        <div class="nav">
+          <button class="btn-back" @click="$emit('back')">← 이전</button>
+          <button class="btn-submit" :disabled="submitting" @click="submit">
+            {{ submitting ? '제출 중...' : '⚽ 예측 제출하기' }}
+          </button>
+        </div>
+      </div>
+    `
+  };
+
+  const SuccessView = {
+    props: ['data'],
+    setup(props) {
+      const valClass = computed(() => {
+        if (props.data.result === '한국 승') return 'val-kr';
+        if (props.data.result === '체코 승') return 'val-cz';
+        return '';
+      });
+      return { valClass };
+    },
+    template: `
+      <div class="success">
+        <span class="s-trophy">🏆</span>
+        <h2 class="s-title">예측 완료!</h2>
+        <p class="s-sub">승부예측이 성공적으로 제출되었습니다.<br>대한민국 파이팅! 🇰🇷⚽</p>
+        <div class="s-card">
+          <p class="s-card-title">나의 예측 요약</p>
+          <div class="s-row"><span class="s-key">이름</span><span class="s-val">{{ data.name }}</span></div>
+          <div class="s-row"><span class="s-key">부서</span><span class="s-val">{{ data.department }}</span></div>
+          <div class="s-row"><span class="s-key">경기 결과</span><span class="s-val" :class="valClass">{{ data.result }}</span></div>
+          <div class="s-row"><span class="s-key">스코어</span><span class="s-val">🇰🇷 {{ data.scoreKorea }} : {{ data.scoreCzech }} 🇨🇿</span></div>
+          <div class="s-row"><span class="s-key">마지막 득점자</span><span class="s-val">{{ data.lastScorer }}</span></div>
+        </div>
+        <div class="s-prize"><span>🏆</span><span>완벽 정답자에게 배민 상품권 <strong>10만원</strong>을 드립니다!</span></div>
+      </div>
+    `
+  };
+
+  // ── Root App ──────────────────────────────────────────────────
+  const App = {
+    components: { TheHeader, MatchHero, StepBar, FormStep1, FormStep2, FormStep3, SuccessView },
+    setup() {
+      const view       = ref('form');
+      const step       = ref(1);
+      const submitting = ref(false);
+      const forward    = ref(true);
+      const form = reactive({ name:'', department:'', scoreKorea:0, scoreCzech:0, lastScorer:'' });
+      const resultData = reactive({});
+      const tName = computed(() => forward.value ? 'sl' : 'sr');
+
+      if (new Date() >= DEADLINE)                 view.value = 'closed';
+      else if (localStorage.getItem(STORAGE_KEY)) view.value = 'duplicate';
+
+      function onStep1(d) { Object.assign(form, d); forward.value = true;  step.value = 2; }
+      function onStep2(d) { Object.assign(form, d); forward.value = true;  step.value = 3; }
+      function goBack()   {                         forward.value = false; step.value--;    }
+
+      async function onSubmit(d) {
+        form.lastScorer = d.lastScorer;
+        submitting.value = true;
+        const result = form.scoreKorea > form.scoreCzech ? '한국 승' :
+                       form.scoreKorea < form.scoreCzech ? '체코 승' : '무승부';
+        const payload = {
+          name: form.name, department: form.department, match: '한국 vs 체코',
+          result, scoreKorea: form.scoreKorea, scoreCzech: form.scoreCzech,
+          lastScorer: form.lastScorer,
+          submittedAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+        };
+        try {
+          await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(payload) });
+        } catch(_) {}
+        localStorage.setItem(STORAGE_KEY, '1');
+        submitting.value = false;
+        Object.assign(resultData, payload);
+        view.value = 'success';
+      }
+
+      return { view, step, submitting, form, resultData, tName, onStep1, onStep2, goBack, onSubmit };
+    },
+    template: `
+      <div>
+        <TheHeader />
+
+        <div v-if="view==='closed'" class="state-pg">
+          <span class="state-icon">⏳</span>
+          <h2>예측 마감</h2>
+          <p>경기 시작 30분 전에 예측이 마감되었습니다.<br>대한민국 파이팅! 🇰🇷</p>
+        </div>
+
+        <div v-else-if="view==='duplicate'" class="state-pg">
+          <span class="state-icon">✅</span>
+          <h2>이미 제출했습니다</h2>
+          <p>승부예측은 1인 1회만 가능합니다.<br>한국 파이팅! ⚽</p>
+        </div>
+
+        <SuccessView v-else-if="view==='success'" :data="resultData" />
+
+        <template v-else>
+          <MatchHero v-if="step===1" />
+          <div v-else class="mini-bar">
+            🇰🇷 대한민국 <span class="mini-vs">vs</span> 체코 🇨🇿
+            <span class="mini-date"> · 6.12 오전 11:00</span>
+          </div>
+          <StepBar :current="step" />
+          <Transition :name="tName" mode="out-in">
+            <FormStep1 v-if="step===1" key="s1" @next="onStep1" />
+            <FormStep2 v-else-if="step===2" key="s2" @next="onStep2" @back="goBack" />
+            <FormStep3 v-else-if="step===3" key="s3"
+              :score-korea="form.scoreKorea" :score-czech="form.scoreCzech" :submitting="submitting"
+              @submit="onSubmit" @back="goBack" />
+          </Transition>
+        </template>
+      </div>
+    `
+  };
+
+  createApp(App).mount('#app');
+  </script>
+</body>
+</html>
