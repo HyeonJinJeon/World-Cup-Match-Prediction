@@ -7,7 +7,7 @@
 const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
 
 const SHEET_NAME     = '승부예측';
-const HEADERS        = ['제출 시각', '이름', '부서', '경기', '승부 예측', '한국 스코어', '체코 스코어', '마지막 득점자'];
+const HEADERS        = ['제출 시각', '이름', '부서', '경기', '승부 예측', '한국 스코어', '멕시코 스코어', '마지막 득점자'];
 
 // ──────────────────────────────────────────────
 //  POST 요청 처리 (폼 제출)
@@ -21,10 +21,10 @@ function doPost(e) {
       Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss'),
       data.name        || '',
       data.department  || '',
-      data.match       || '한국 vs 체코',
+      data.match       || '한국 vs 멕시코',
       data.result      || '',
       data.scoreKorea  ?? '',
-      data.scoreCzech  ?? '',
+      data.scoreMexico ?? '',
       data.lastScorer  || '',
     ]);
 
@@ -66,7 +66,7 @@ function getOrCreateSheet() {
     sheet.setColumnWidth(4, 120); // 경기
     sheet.setColumnWidth(5, 90);  // 승부 예측
     sheet.setColumnWidth(6, 90);  // 한국 스코어
-    sheet.setColumnWidth(7, 90);  // 체코 스코어
+    sheet.setColumnWidth(7, 90);  // 멕시코 스코어
     sheet.setColumnWidth(8, 140); // 첫 번째 득점자
   }
 
