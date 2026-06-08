@@ -12,7 +12,7 @@
     :root {
       --bg: #0c150d; --bg-card: rgba(255,255,255,0.05); --bg-card2: rgba(255,255,255,0.08);
       --green: #00A651; --green-dark: #007A33; --green-deep: #005826;
-      --gold: #F4C300; --red-kr: #C60C30; --red-cz: #D7141A;
+      --gold: #F4C300; --red-kr: #C60C30; --red-mx: #006847;
       --text: #fff; --muted: rgba(255,255,255,0.5); --dim: rgba(255,255,255,0.28);
       --border: rgba(255,255,255,0.1); --border-g: rgba(0,166,81,0.3);
       --radius: 16px; --fb: 'Noto Sans KR',sans-serif; --fd: 'Bebas Neue',sans-serif;
@@ -46,7 +46,7 @@
     .mc { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 6px; }
     .mc-bar { display: flex; height: 4px; }
     .mc-bar-kr { flex: 1; background: linear-gradient(to right, #003478, #C60C30); }
-    .mc-bar-cz { flex: 1; background: linear-gradient(to right, #D7141A, rgba(255,255,255,0.2)); }
+    .mc-bar-mx { flex: 1; background: linear-gradient(to right, #006847, rgba(255,255,255,0.2)); }
     .mc-teams { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 12px; gap: 10px; }
     .mc-team { display: flex; flex-direction: column; gap: 4px; flex: 1; }
     .mc-team.right { align-items: flex-end; }
@@ -111,21 +111,21 @@
     .score-colon { font-family: var(--fd); font-size: 34px; color: rgba(255,255,255,0.22); flex-shrink: 0; padding-top: 44px; }
     .result-chip { text-align: center; font-size: 14px; font-weight: 700; padding: 10px 20px; border-radius: 99px; transition: all 0.3s; }
     .rc-kr   { background: rgba(0,52,120,0.25); border: 1px solid rgba(0,52,120,0.5); color: #7fb3ff; }
-    .rc-cz   { background: rgba(215,20,26,0.15); border: 1px solid rgba(215,20,26,0.4); color: #ff8888; }
+    .rc-mx   { background: rgba(0,104,71,0.15); border: 1px solid rgba(0,104,71,0.4); color: #6fdba8; }
     .rc-draw { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--muted); }
 
     /* ── Step 3 scorer ── */
     .scorer-hint { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
     .no-goal-notice { background: rgba(244,195,0,0.08); border: 1px solid rgba(244,195,0,0.25); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--gold); margin-bottom: 14px; }
     .team-div { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.4px; margin: 16px 0 10px; }
-    .team-div.cz { margin-top: 18px; }
+    .team-div.mx { margin-top: 18px; }
     .player-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .pchip { display: flex; align-items: center; gap: 10px; background: var(--bg-card2); border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 13px; text-align: left; transition: all 0.2s; cursor: pointer; width: 100%; }
     .pchip.full { grid-column: 1/-1; margin-top: 10px; }
     .pchip:hover:not(.sel) { border-color: rgba(0,166,81,0.4); background: rgba(0,166,81,0.06); }
     .pchip.sel { border-color: var(--green); background: rgba(0,166,81,0.18); box-shadow: 0 0 0 2px rgba(0,166,81,0.15); }
     .p-no { font-family: var(--fd); font-size: 18px; color: var(--dim); min-width: 22px; line-height: 1; }
-    .p-no.cz { color: rgba(215,20,26,0.55); }
+    .p-no.mx { color: rgba(0,104,71,0.65); }
     .pchip.sel .p-no { color: var(--green); }
     .p-name { font-size: 13px; font-weight: 700; color: var(--muted); line-height: 1.2; }
     .pchip.sel .p-name { color: #fff; }
@@ -141,7 +141,7 @@
     .s-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
     .s-row:last-child { border-bottom: none; }
     .s-key { color: var(--muted); } .s-val { font-weight: 700; color: #fff; }
-    .val-kr { color: #7fb3ff; } .val-cz { color: #ff8888; }
+    .val-kr { color: #7fb3ff; } .val-mx { color: #6fdba8; }
     .s-prize { display: inline-flex; align-items: center; gap: 8px; background: rgba(244,195,0,0.08); border: 1px solid rgba(244,195,0,0.3); border-radius: 12px; padding: 14px 20px; font-size: 13px; color: var(--gold); line-height: 1.5; }
     .s-prize strong { font-weight: 800; }
 
@@ -169,8 +169,8 @@
   // ── Config ────────────────────────────────────────────────────
   // ⚠️ 배포 전 Apps Script URL 로 교체하세요
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7fJH0lnXwQWCgE2eQ_EccEnzyzH16TMKUdMgrYELIzT3sacPgEnh0wTgKiEJBxuAF/exec';
-  const DEADLINE    = new Date('2026-06-12T01:30:00Z'); // KST 10:30
-  const STORAGE_KEY = 'hk_wc2026_korea_czech';
+  const DEADLINE    = new Date('2026-06-12T00:30:00Z'); // KST 09:30
+  const STORAGE_KEY = 'hk_wc2026_korea_mexico';
 
   // ── Player data ───────────────────────────────────────────────
   const KR_PLAYERS = [
@@ -183,15 +183,15 @@
     { id:'oh',      name:'오현규',  no:18 },
     { id:'seol',    name:'설영우',  no:2  },
   ];
-  const CZ_PLAYERS = [
-    { id:'schick', name:'P. Schick', no:10 },
-    { id:'hlozek', name:'A. Hložek', no:11 },
-    { id:'soucek', name:'T. Souček', no:8  },
-    { id:'lingr',  name:'O. Lingr',  no:9  },
-    { id:'provod', name:'L. Provod', no:14 },
-    { id:'coufal', name:'V. Coufal', no:5  },
+  const MX_PLAYERS = [
+    { id:'gimenez', name:'S. Giménez', no:9  },
+    { id:'lozano',  name:'H. Lozano',  no:22 },
+    { id:'alvarez', name:'E. Álvarez', no:4  },
+    { id:'pineda',  name:'O. Pineda',  no:18 },
+    { id:'vega',    name:'A. Vega',    no:21 },
+    { id:'jimenez', name:'R. Jiménez', no:19 },
   ];
-  const ALL_PLAYERS = [...KR_PLAYERS, ...CZ_PLAYERS, { id:'none', name:'득점 없음', no:null }];
+  const ALL_PLAYERS = [...KR_PLAYERS, ...MX_PLAYERS, { id:'none', name:'득점 없음', no:null }];
 
   // ── Components ────────────────────────────────────────────────
 
@@ -218,9 +218,9 @@
           <span class="display-g">PREDICT</span>
         </h1>
         <p class="hero-sub">최종 스코어와 마지막 득점자를 맞혀보세요.<br>정확히 맞추면 당신이 오늘의 주인공!</p>
-        <div class="prize"><span>🏆</span><span>완벽 정답자 배민 상품권 <strong>10만원</strong></span></div>
+        <div class="prize"><span>🏆</span><span>가장 근접한 스코어 예측자 배민 상품권 <strong>10만원</strong></span></div>
         <div class="mc">
-          <div class="mc-bar"><div class="mc-bar-kr"/><div class="mc-bar-cz"/></div>
+          <div class="mc-bar"><div class="mc-bar-kr"/><div class="mc-bar-mx"/></div>
           <div class="mc-teams">
             <div class="mc-team">
               <span class="mc-code">KR</span>
@@ -229,12 +229,12 @@
             </div>
             <span class="mc-vs">VS</span>
             <div class="mc-team right">
-              <span class="mc-code">CZ</span>
-              <span class="mc-emoji">🇨🇿</span>
-              <span class="mc-name">체코</span>
+              <span class="mc-code">MX</span>
+              <span class="mc-emoji">🇲🇽</span>
+              <span class="mc-name">멕시코</span>
             </div>
           </div>
-          <p class="mc-info">📅 2026년 6월 12일 (금) · 오전 11:00 · FIFA WORLD CUP A조</p>
+          <p class="mc-info">📅 2026년 6월 12일 (금) · 오전 10:00 · FIFA WORLD CUP A조</p>
         </div>
       </section>
     `
@@ -267,7 +267,7 @@
       const name = ref('');
       const dept = ref('');
       const err  = ref('');
-      const depts = ['영업팀','마케팅팀','On Trade팀','Off Trade팀','재무팀','HR팀','물류/SCM팀','기타'];
+      const depts = ['GM','People','Marketing','Finance','Supply Chain','Trade Marketing & Operations','On Trade Sales','Off Trade Sales'];
       function next() {
         err.value = '';
         if (!name.value.trim()) { err.value = '이름을 입력해주세요.'; return; }
@@ -305,23 +305,23 @@
     emits: ['next', 'back'],
     setup(_, { emit }) {
       const kr = ref(0);
-      const cz = ref(0);
+      const mx = ref(0);
       function change(team, d) {
         if (team === 'kr') kr.value = Math.max(0, Math.min(20, kr.value + d));
-        else               cz.value = Math.max(0, Math.min(20, cz.value + d));
+        else               mx.value = Math.max(0, Math.min(20, mx.value + d));
       }
       const resultLabel = computed(() => {
-        if (kr.value > cz.value) return '🇰🇷 대한민국 승';
-        if (kr.value < cz.value) return '🇨🇿 체코 승';
+        if (kr.value > mx.value) return '🇰🇷 대한민국 승';
+        if (kr.value < mx.value) return '🇲🇽 멕시코 승';
         return '🤝 무승부';
       });
       const resultClass = computed(() => {
-        if (kr.value > cz.value) return 'result-chip rc-kr';
-        if (kr.value < cz.value) return 'result-chip rc-cz';
+        if (kr.value > mx.value) return 'result-chip rc-kr';
+        if (kr.value < mx.value) return 'result-chip rc-mx';
         return 'result-chip rc-draw';
       });
-      function next() { emit('next', { scoreKorea: kr.value, scoreCzech: cz.value }); }
-      return { kr, cz, change, resultLabel, resultClass, next };
+      function next() { emit('next', { scoreKorea: kr.value, scoreMexico: mx.value }); }
+      return { kr, mx, change, resultLabel, resultClass, next };
     },
     template: `
       <div class="step-wrap">
@@ -339,12 +339,12 @@
             </div>
             <span class="score-colon">:</span>
             <div class="score-col">
-              <span class="score-flag">🇨🇿</span>
-              <span class="score-lbl">체코</span>
+              <span class="score-flag">🇲🇽</span>
+              <span class="score-lbl">멕시코</span>
               <div class="stepper">
-                <button class="step-btn" @click="change('cz',-1)" :disabled="cz===0">−</button>
-                <span class="score-val">{{ cz }}</span>
-                <button class="step-btn" @click="change('cz',+1)" :disabled="cz===20">+</button>
+                <button class="step-btn" @click="change('mx',-1)" :disabled="mx===0">−</button>
+                <span class="score-val">{{ mx }}</span>
+                <button class="step-btn" @click="change('mx',+1)" :disabled="mx===20">+</button>
               </div>
             </div>
           </div>
@@ -359,20 +359,26 @@
   };
 
   const FormStep3 = {
-    props: { scoreKorea: Number, scoreCzech: Number, submitting: Boolean },
+    props: { scoreKorea: Number, scoreMexico: Number, submitting: Boolean },
     emits: ['submit', 'back'],
     setup(props, { emit }) {
-      const isNoScore = computed(() => props.scoreKorea === 0 && props.scoreCzech === 0);
+      const isNoScore = computed(() => props.scoreKorea === 0 && props.scoreMexico === 0);
       const sel = ref(isNoScore.value ? 'none' : '');
+      const customName = ref('');
       const err = ref('');
       function submit() {
         err.value = '';
         const id = isNoScore.value ? 'none' : sel.value;
         if (!id) { err.value = '마지막 득점자를 선택해주세요.'; return; }
+        if (id === 'custom') {
+          if (!customName.value.trim()) { err.value = '득점자 이름을 입력해주세요.'; return; }
+          emit('submit', { lastScorer: customName.value.trim() });
+          return;
+        }
         const p = ALL_PLAYERS.find(x => x.id === id);
         emit('submit', { lastScorer: p ? p.name : '득점 없음' });
       }
-      return { isNoScore, sel, err, KR_PLAYERS, CZ_PLAYERS, submit };
+      return { isNoScore, sel, customName, err, KR_PLAYERS, MX_PLAYERS, submit };
     },
     template: `
       <div class="step-wrap">
@@ -388,10 +394,10 @@
                 <span class="p-name">{{ p.name }}</span>
               </button>
             </div>
-            <p class="team-div cz">🇨🇿 체코</p>
+            <p class="team-div mx">🇲🇽 멕시코</p>
             <div class="player-grid">
-              <button v-for="p in CZ_PLAYERS" :key="p.id" class="pchip" :class="{ sel: sel===p.id }" @click="sel=p.id">
-                <span class="p-no cz">{{ p.no }}</span>
+              <button v-for="p in MX_PLAYERS" :key="p.id" class="pchip" :class="{ sel: sel===p.id }" @click="sel=p.id">
+                <span class="p-no mx">{{ p.no }}</span>
                 <span class="p-name">{{ p.name }}</span>
               </button>
             </div>
@@ -399,6 +405,13 @@
               <span class="p-no">—</span>
               <span class="p-name">득점 없음 (무득점)</span>
             </button>
+            <button class="pchip full" :class="{ sel: sel==='custom' }" @click="sel='custom'">
+              <span class="p-no">✏️</span>
+              <span class="p-name">직접 입력</span>
+            </button>
+            <div v-if="sel==='custom'" class="field" style="margin-top:10px;">
+              <input v-model="customName" type="text" placeholder="예: H. Lozano, 손흥민 등 선수 이름을 입력하세요" maxlength="30" autocomplete="off">
+            </div>
           </template>
           <template v-else>
             <button class="pchip full sel">
@@ -423,7 +436,7 @@
     setup(props) {
       const valClass = computed(() => {
         if (props.data.result === '한국 승') return 'val-kr';
-        if (props.data.result === '체코 승') return 'val-cz';
+        if (props.data.result === '멕시코 승') return 'val-mx';
         return '';
       });
       return { valClass };
@@ -438,10 +451,10 @@
           <div class="s-row"><span class="s-key">이름</span><span class="s-val">{{ data.name }}</span></div>
           <div class="s-row"><span class="s-key">부서</span><span class="s-val">{{ data.department }}</span></div>
           <div class="s-row"><span class="s-key">경기 결과</span><span class="s-val" :class="valClass">{{ data.result }}</span></div>
-          <div class="s-row"><span class="s-key">스코어</span><span class="s-val">🇰🇷 {{ data.scoreKorea }} : {{ data.scoreCzech }} 🇨🇿</span></div>
+          <div class="s-row"><span class="s-key">스코어</span><span class="s-val">🇰🇷 {{ data.scoreKorea }} : {{ data.scoreMexico }} 🇲🇽</span></div>
           <div class="s-row"><span class="s-key">마지막 득점자</span><span class="s-val">{{ data.lastScorer }}</span></div>
         </div>
-        <div class="s-prize"><span>🏆</span><span>완벽 정답자에게 배민 상품권 <strong>10만원</strong>을 드립니다!</span></div>
+        <div class="s-prize"><span>🏆</span><span>가장 근접한 스코어 예측자에게 배민 상품권 <strong>10만원</strong>을 드립니다!</span></div>
       </div>
     `
   };
@@ -454,7 +467,7 @@
       const step       = ref(1);
       const submitting = ref(false);
       const forward    = ref(true);
-      const form = reactive({ name:'', department:'', scoreKorea:0, scoreCzech:0, lastScorer:'' });
+      const form = reactive({ name:'', department:'', scoreKorea:0, scoreMexico:0, lastScorer:'' });
       const resultData = reactive({});
       const tName = computed(() => forward.value ? 'sl' : 'sr');
 
@@ -468,11 +481,11 @@
       async function onSubmit(d) {
         form.lastScorer = d.lastScorer;
         submitting.value = true;
-        const result = form.scoreKorea > form.scoreCzech ? '한국 승' :
-                       form.scoreKorea < form.scoreCzech ? '체코 승' : '무승부';
+        const result = form.scoreKorea > form.scoreMexico ? '한국 승' :
+                       form.scoreKorea < form.scoreMexico ? '멕시코 승' : '무승부';
         const payload = {
-          name: form.name, department: form.department, match: '한국 vs 체코',
-          result, scoreKorea: form.scoreKorea, scoreCzech: form.scoreCzech,
+          name: form.name, department: form.department, match: '한국 vs 멕시코',
+          result, scoreKorea: form.scoreKorea, scoreMexico: form.scoreMexico,
           lastScorer: form.lastScorer,
           submittedAt: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
         };
@@ -508,15 +521,15 @@
         <template v-else>
           <MatchHero v-if="step===1" />
           <div v-else class="mini-bar">
-            🇰🇷 대한민국 <span class="mini-vs">vs</span> 체코 🇨🇿
-            <span class="mini-date"> · 6.12 오전 11:00</span>
+            🇰🇷 대한민국 <span class="mini-vs">vs</span> 멕시코 🇲🇽
+            <span class="mini-date"> · 6.12 오전 10:00</span>
           </div>
           <StepBar :current="step" />
           <Transition :name="tName" mode="out-in">
             <FormStep1 v-if="step===1" key="s1" @next="onStep1" />
             <FormStep2 v-else-if="step===2" key="s2" @next="onStep2" @back="goBack" />
             <FormStep3 v-else-if="step===3" key="s3"
-              :score-korea="form.scoreKorea" :score-czech="form.scoreCzech" :submitting="submitting"
+              :score-korea="form.scoreKorea" :score-mexico="form.scoreMexico" :submitting="submitting"
               @submit="onSubmit" @back="goBack" />
           </Transition>
         </template>
